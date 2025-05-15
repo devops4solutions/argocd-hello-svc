@@ -20,7 +20,7 @@ jobs:
       - name: Update tag in values.yaml
         run: |
           cd target-repo/deploy/dev
-          sed -i "s/^  tag: .*/  tag: ${{ ${{ github.sha }}/" values.yaml
+          sed -i "s/^  tag: .*/  tag: ${{ github.sha }}/" values.yaml
 
       - name: Configure Git
         run: |
