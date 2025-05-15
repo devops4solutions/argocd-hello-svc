@@ -20,15 +20,18 @@ jobs:
       - name: Update tag in values.yaml
         run: |
           cd target-repo/deploy/dev
-          sed -i "s/^  tag: .*/  tag: ${{ env.SHA }}/" values.yaml
+          sed -i "s/^  tag: .*/  tag: ${{ ${{ github.sha }}/" values.yaml
 
+      - name: Configure Git
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+     
       - name: Commit and Push changes
         run: |
           cd target-repo
-          git config user.name "github-actions"
-          git config user.email "actions@github.com"
           git add deploy/dev/values.yaml
-          git commit -m "Update tag to ${{ env.SHA }}"
+          git commit -m "Update tag to ${{ github.SHA }}"
           git push
 
   
