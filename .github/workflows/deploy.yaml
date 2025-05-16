@@ -16,6 +16,8 @@ jobs:
         with:
           repository: devops4solutions/deploy-argocd-app
           path: target-repo
+          token: ${{ secrets.PAT_TOKEN }}
+
 
       - name: Update tag in values.yaml
         run: |
