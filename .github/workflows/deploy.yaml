@@ -41,5 +41,6 @@ jobs:
           PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
           git remote set-url origin https://x-access-token:${PAT_TOKEN}@github.com/devops4solutions/deploy-argocd-app.git
+          git pull
           git push
   
