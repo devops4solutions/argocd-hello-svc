@@ -27,20 +27,23 @@ jobs:
 
       - name: Configure Git
         run: |
-          git config --unset-all http.https://github.com/.extraheader
+          cd target-repo
+          git config --unset-all http.https://github.com/.extraheader || true
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
       - name: Add and commit the file
         run: |
+          cd target-repo
           git add .
-          git commit -m "Add sample.txt via GitHub Actions"
+          git commit -m "Updated tag in values.yaml via GitHub Actions" || echo "No changes to commit"
 
       - name: Push changes
         env:
           PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
+          cd target-repo
           git remote set-url origin https://x-access-token:${PAT_TOKEN}@github.com/devops4solutions/deploy-argocd-app.git
           git fetch origin main
+          git pull --rebase
           git push
-  
