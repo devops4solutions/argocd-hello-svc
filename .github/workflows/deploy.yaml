@@ -7,10 +7,20 @@ on:
       - main
 jobs:
   build:
-     name: Maven Build
+    uses: devops4solutions/github-reusable-workflows/.github/workflows/ci.yaml@main
+    with:
+      ecr-registry: public.ecr.aws/w0f5g4k6
+      ecr-repository: hello-svc
+      image-tag: ${{ github.sha }}
+      jar-name: helloservice-1.jar
+    secrets:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  
+  push:
+     name: Push Tag 
      runs-on: [ ubuntu-latest ]
-     steps:
-      - uses: actions/checkout@v3
+     steps:  
       - name: Checkout target repository
         uses: actions/checkout@v3
         with:
@@ -18,12 +28,15 @@ jobs:
           path: target-repo
           token: ${{ secrets.PAT_TOKEN }}
 
-
       - name: Update tag in values.yaml
         run: |
           cd target-repo/deploy/dev
-          ls
           sed -i "s/^  tag: .*/  tag: ${{ github.sha }}/" values.yaml
+          cd target-repo/deploy/test
+          sed -i "s/^  tag: .*/  tag: ${{ github.sha }}/" values.yaml
+          cd target-repo/deploy/prod
+          sed -i "s/^  tag: .*/  tag: ${{ github.sha }}/" values.yaml
+          
 
       - name: Configure Git
         run: |
